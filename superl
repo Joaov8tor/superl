@@ -1,0 +1,102 @@
+-- Configuração do Painel
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local PanelToggleButton = Instance.new("TextButton")
+local autoGolButton = Instance.new("TextButton")
+local espBolaButton = Instance.new("TextButton")
+local velocidadeTextbox = Instance.new("TextBox")
+
+-- Configuração do Painel e do Botão
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.Size = UDim2.new(0, 300, 0, 400)
+Frame.Position = UDim2.new(0.5, -150, 0.5, -200)
+Frame.Visible = false  -- Começa invisível
+
+-- Botão para abrir/fechar o painel
+PanelToggleButton.Parent = ScreenGui
+PanelToggleButton.Text = "Painel"
+PanelToggleButton.Size = UDim2.new(0, 100, 0, 50)
+PanelToggleButton.Position = UDim2.new(0, 10, 0, 10)
+PanelToggleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+PanelToggleButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+
+-- Alternar visibilidade do painel
+PanelToggleButton.MouseButton1Click:Connect(function()
+    Frame.Visible = not Frame.Visible
+end)
+
+-- Função AutoGol
+autoGolButton.Parent = Frame
+autoGolButton.Text = "AutoGol"
+autoGolButton.Size = UDim2.new(1, 0, 0, 50)
+autoGolButton.Position = UDim2.new(0, 0, 0, 50)
+autoGolButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+autoGolButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+
+autoGolButton.MouseButton1Click:Connect(function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character
+    local bola = workspace:FindFirstChild("Ball")  -- Nome da bola no jogo
+
+    if bola then
+        local goalPosition = Vector3.new(0, 0, 0)  -- Ajuste para a posição do gol desejado
+        character:MoveTo(goalPosition)
+    end
+end)
+
+-- Função ESP para a bola
+espBolaButton.Parent = Frame
+espBolaButton.Text = "ESP Bola"
+espBolaButton.Size = UDim2.new(1, 0, 0, 50)
+espBolaButton.Position = UDim2.new(0, 0, 0, 110)
+espBolaButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+espBolaButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+local function ativarESP()
+    local bola = workspace:FindFirstChild("Ball")
+    if bola then
+        local espPart = Instance.new("BoxHandleAdornment")
+        espPart.Size = bola.Size + Vector3.new(1, 1, 1)
+        espPart.Adornee = bola
+        espPart.AlwaysOnTop = true
+        espPart.ZIndex = 5
+        espPart.Color3 = Color3.fromRGB(255, 0, 0)  -- Cor vermelha
+        espPart.Transparency = 0.3
+        espPart.Parent = bola
+    end
+end
+
+espBolaButton.MouseButton1Click:Connect(function()
+    ativarESP()
+end)
+
+-- Função de Velocidade com TextBox
+local velocidadeLabel = Instance.new("TextLabel")
+velocidadeLabel.Parent = Frame
+velocidadeLabel.Text = "Velocidade"
+velocidadeLabel.Size = UDim2.new(1, 0, 0, 50)
+velocidadeLabel.Position = UDim2.new(0, 0, 0, 170)
+velocidadeLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+velocidadeLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+
+velocidadeTextbox.Parent = Frame
+velocidadeTextbox.PlaceholderText = "Insira a Velocidade"
+velocidadeTextbox.Size = UDim2.new(1, 0, 0, 50)
+velocidadeTextbox.Position = UDim2.new(0, 0, 0, 230)
+velocidadeTextbox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+velocidadeTextbox.TextColor3 = Color3.fromRGB(0, 0, 0)
+
+velocidadeTextbox.FocusLost:Connect(function(enterPressed)
+    if enterPressed then
+        local velocidade = tonumber(velocidadeTextbox.Text)
+        if velocidade then
+            local player = game.Players.LocalPlayer
+            local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.WalkSpeed = velocidade
+            end
+        end
+    end
+end)
